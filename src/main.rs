@@ -2,11 +2,9 @@ use std::{
 	fmt::Display,
 	fs::{self, DirEntry, FileType},
 	io::{self, Error},
-	ops::IndexMut,
+	ops::{Index, IndexMut},
 	path::PathBuf,
 	process::exit,
-	thread::sleep,
-	time::Duration,
 };
 
 use clap::Parser;
@@ -147,10 +145,7 @@ fn main() {
 					MoveTo(u16::try_from(offset_col).unwrap(), offset_row),
 				);
 			}
-			println!(
-				"{file}{}",
-				" ".repeat(column.item_max_size - file.len() + 1)
-			);
+			println!("{file}");
 			offset_row += 1;
 		}
 		if is_first_col {
@@ -167,7 +162,10 @@ fn main() {
 	}
 	let _ = execute!(
 		io::stdout(),
-		MoveTo(original_cursor_location.0, u16::try_from(height).unwrap()),
+		MoveTo(
+			original_cursor_location.0,
+			original_cursor_location.1 + u16::try_from(colums.index(0).items.len()).unwrap()
+		),
 	);
 }
 
